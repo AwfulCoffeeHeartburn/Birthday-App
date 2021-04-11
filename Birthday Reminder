@@ -1,0 +1,52 @@
+'''
+Simple birthday reminder application.
+
+Stanley G. Zezotarski
+
+4/11/2021
+
+Open the file
+Read the file for any dates matching today's date
+If the dates match, send notification
+Place the birth years of each person in the birthdays file - use test ages for now
+Use Regex to scan the file for birth years # Didn't actually have to do this, but it would have been interesting
+Subtract birth year from current year
+The result is stored in 'age'
+Send 'age' to notify_me() as an argument alongside 'name'
+Test program
+Place in Windows 10 'run' folder
+'''
+
+PATH_TO_BIRTHDAYS = 'C:/.../Birthdays.txt'
+
+from win10toast import ToastNotifier
+import time
+#import os
+
+def main():
+    with open(PATH_TO_BIRTHDAYS) as file:
+        for line in file:
+            birth_year, birthday, *name = line.split()
+            # print(birthday)
+            today = time.strftime('%m-%d')
+            if birthday == today:
+                age = (int(time.strftime('%y')) + 2000) - int(birth_year)
+                name = str(name).title().strip("[]").replace("'", "").replace(",", "")
+                notify_me(name, age)
+                print_birthday(name, age)
+
+    close = input("Press any key to quit...")
+
+
+def print_birthday(name, age):
+    print(f"It's {name}'s birthday. They turned {str(age)}")
+
+
+def notify_me(name, age):
+    birthday = ToastNotifier()
+    birthday.show_toast(f"It's {name.title()}'s birthday!",
+                        f"They will be {str(age)} years old.",
+                        # icon_path="",
+                        duration=15)
+
+main()
